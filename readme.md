@@ -10,9 +10,9 @@ To Do:
 * allow for editing / deletion of history
 * work in dolars instead of shares
 * set text in recommendations, one of:
-*  * You're right on time! Buy x shares for $y
-*  * You're all good! Come back on {{nextPurchaseDate}}
-*  * You're late! Buy x shares for $y to catch up.
+   * You're right on time! Buy x shares for $y
+   * You're all good! Come back on {{nextPurchaseDate}}
+   * You're late! Buy x shares for $y to catch up.
 * add setInterval to update the share price every so often
 * show the most recent update time
 * add a refresh button
