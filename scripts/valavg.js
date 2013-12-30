@@ -15,7 +15,7 @@ function AccountCtl($scope, $http, $log, $filter) {
         // names get truncated with the above query. This one will get FundFamily=Vanguard and Category=Target Date 2036-2040
         // select FundFamily, Category from yahoo.finance.stocks where symbol="vforx"
         
-        $http.jsonp(url).
+        $http.jsonp(url, {cache: true}).
             success(function(data, status, headers, config) {
                 try {
                     $scope.currentPrice = parseFloat(data.query.results.quote.PreviousClose);
@@ -32,15 +32,26 @@ function AccountCtl($scope, $http, $log, $filter) {
                 $log.error('Error fetching feed:', data);
             });
     }
+    
+    function sortPurchases() {
+        $scope.purchases.sort(function(a, b) {
+            if (a.date.getTime() == b.date.getTime()) return 0;
+            return (a.date>b.date) ? 1 : -1;
+        });
+    }
 
     $scope.purchases = [
         {date: localDate('12/20/2013'), price: 28.07, shares: 15},
         {date: localDate('07/11/2013'), price: 28.01, shares: 34}
     ];
     
+    sortPurchases();
+    
     $scope.symbol = $scope.symbol || 'VFORX';
     $scope.desiredPeriodIncrease = $scope.desiredPeriodIncrease || 100;
-    $scope.purchaseDate = $filter('date')(new Date(), 'yyyy-MM-dd'); // this needs to be a string to play nice with browsers that don't support the date input type
+    $scope.purchaseDate = $filter('date')(new Date(), 'yyyy-MM-dd'); // this needs to be a string to play nice with browsers that don't support <input type="date">
+    $scope.purchaseShares = 0;
+    $scope.purchaseTotal = 0;
 
     
     $scope.addPurchase = function() {
@@ -53,8 +64,9 @@ function AccountCtl($scope, $http, $log, $filter) {
         var nextDate = new Date(purchase.date); // new date object, same time
         nextDate.setMonth(nextDate.getMonth() + 1); // now change the time by a month on the new Date, leaving the old one intact
         $scope.purchaseDate =  $filter('date')(new Date(), 'YYYY-MM-dd'); // and, back to a string
-        $scope.purchaseDate.setMonth($scope.purchaseDate.getMonth() + 1);
         $scope.purchaseShares = 0;
+        $scope.purchaseTotal = 0;
+        sortPurchases();
     };
     
     getCurrentPrice($scope.symbol);

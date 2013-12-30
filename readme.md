@@ -28,18 +28,25 @@ To Do:
 ------
 * calculate suggested number or shares to purchase
 * allow for editing / deletion of history
-* work in dolars instead of shares
+* Add a warning about floating point math and don't break the IRS rules
 * set text in recommendations, one of:
    * You're right on time! Buy x shares for $y
    * You're all good! Come back on {{nextPurchaseDate}}
    * You're late! Buy x shares for $y to catch up.
-* add setInterval to update the share price every so often
-* show the most recent update time
-* add a refresh button
+* Beef up the fund price JSONP
+    * add setInterval to update the share price every so often - maybe once every hour or two
+    * show the most recent update time
+    * add a refresh button
+    * Turn off GET caching for the updates
+    * consider using $resource - http://docs.angularjs.org/api/ngResource.$resource
+    * Show the name of the fund (preferably the full name)
+    * look at historical numbers so that the price always matches the givne date
 * build some stats on the total number of shares owned, average price paid, income earned so far, etc.
-* Show the name of the fund (preferably the full name)
+* compare curent results to DCA
+* Charts!
 * add some style
 * Add an intro that encourages value averaging
 * add a footnote about vanguard
-* maybe add some books
+* maybe add some recommended books - A Random Walk Down Wall Street, something from Boggle, The Intelligent Asset Allocator
+* switch to minified JS
     

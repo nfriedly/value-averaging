@@ -1,61 +1,84 @@
 <!doctype html>
 <html ng-app>
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.js"></script>
-    <script src="valavg.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
 </head>
 <body>
-    <h1>Value Averaging</h1>
-    <div ng-controller="AccountCtl">
-        <h2>Recommendations</h2>
+    <div class="container">
+        <h1>Value Averaging</h1>
+        <div ng-controller="AccountCtl">
+            <h2>Recommendations</h2>
         
-        <h3>If you really want to buy today, then...</h3>
+            <h3>If you really want to buy today, then...</h3>
         
-        <h2>Basics</h2>
-        <p>You should set these once and then never change them.</p>
-        <p>
-            <input type="text" ng-model="symbol"">
-            <label for="symbol">Mutual fund ticker symbol.</label> <a href="https://personal.vanguard.com/us/funds/vanguard/TargetRetirementList">Vanguard Target Retirement funds are recommended</a>
-        </p>
-        <p>
-            <input type="number" name="desiredPeriodIncrease" ng-model="desiredPeriodIncrease">
-            <label for="desiredPeriodIncrease">Dollar amount of increase desired each period</label>
-        </p>
-        <p>Period length = 1 month</p>
-        <form ng-submit="addPurchase()" name="addPurchase">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Share Price</th>
-                        <th>Number of shares</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="purchase in purchases | orderBy:'+date'">
-                        <td>{{purchase.date | date:shortDate}}</td>
-                        <td>{{purchase.price}}</td>
-                        <td>{{purchase.shares}}</td>
-                    </tr>
-                    <tr class="add-purchase">
-                        <td><input type="date" name="date" ng-model="purchaseDate" required ng-pattern="/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/"></td>
-                        <td><input type="number" name="price" ng-model="purchasePrice" required ng-pattern="/\d+(\.\d+)?/"></td>
-                        <td><input type="number" name="shares" ng-model="purchaseShares" required ng-pattern="/\d+(\.\d+)?/"></td>
-                        <td><input class="btn-primary" type="submit" value="add"></td>
-                    </tr>
-                    <tr class="add-purchase validation">
-                        <td><span class="error" ng-show="addPurchase.date.$error.pattern">Format: YYY-MM-DD</span></td>
-                        <td><span class="error" ng-show="addPurchase.price.$error.pattern">Format: 1.00</span></td>
-                        <td><span class="error" ng-show="addPurchase.shares.$error.pattern">Format: 1.00</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </form>
-        <h2>Stats</h2>
-        <ul>
-            <li>Current Price: {{currentPrice}}</li>
-            <li>Purchase Price: {{purchasePrice}}</li>
-        </ul>
+            <h2>Basics</h2>
+            <p>You should set these once and then never change them.</p>
+            <p>
+                <input type="text" ng-model="symbol"">
+                <label for="symbol">Mutual fund ticker symbol.</label> <a href="https://personal.vanguard.com/us/funds/vanguard/TargetRetirementList">Vanguard Target Retirement funds are recommended</a>
+            </p>
+            <p>
+                <input type="number" name="desiredPeriodIncrease" ng-model="desiredPeriodIncrease">
+                <label for="desiredPeriodIncrease">Dollar amount of increase desired each period</label>
+            </p>
+            <p>Period length = 1 month</p>
+            <form ng-submit="addPurchase()" name="addPurchaseForm">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Share Price</th>
+                            <th>Number of shares</th>
+                            <th>Purchase Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="purchase in purchases">
+                            <td>{{purchase.date | date:shortDate}}</td>
+                            <td>{{purchase.price | currency}}</td>
+                            <td>{{purchase.shares}}</td>
+                            <td>{{purchase.price * purchase.shares | currency}}</td>
+                        </tr>
+                        <tr class="add-purchase">
+                            <td>
+                                <input type="date" name="date" ng-model="purchaseDate" required ng-pattern="/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/">
+                                <div class="error" ng-show="addPurchase.date.$error.pattern">Format: YYY-MM-DD</div>
+                            </td>
+                            <td>
+                                <input type="number" step="any" name="price" ng-model="purchasePrice" required ng-pattern="/\d+(\.\d+)?/">
+                                <div class="error" ng-show="addPurchase.price.$error.pattern">Format: 1.00</div>
+                            </td>
+                            <td>
+                                <input type="number" step="any" name="shares" ng-model="purchaseShares" required ng-pattern="/\d+(\.\d+)?/" ng-change="purchaseTotal = purchaseShares * purchasePrice">
+                                <div class="error" ng-show="addPurchase.shares.$error.pattern">Format: 1.00</div>
+                            </td>
+                            <td>
+                                <input type="number" step="any" name="total" ng-model="purchaseTotal" required ng-pattern="/\d+(\.\d+)?/" ng-change="purchaseShares = purchasePrice / purchaseTotal">
+                                <div class="error" ng-show="addPurchase.total.$error.pattern">Format: 1.00</div>
+                            </td>
+                            <td>
+                                <input class="btn-primary" type="submit" value="add">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+            <h2>Stats</h2>
+            <ul>
+                <li>Current Price: {{currentPrice | currency}}</li>
+                <li>Purchase Price: {{purchasePrice | currency}}</li>
+            </ul>
+        </div>
     </div>
+    <script>
+        // for offline development and any issues with Google's JS service
+        function loadScript(src) {
+            var s = document.createElement('script');
+            s.src = src;
+            document.head.appendChild(s);
+        }
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.js" onerror="loadScript('scripts/lib/angular.js')"></script>
+    <script src="scripts/valavg.js"></script>
 </body>
 </html>
