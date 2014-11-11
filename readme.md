@@ -1,3 +1,8 @@
+*Note*: This is incomplete and unsupported. I'm leaving the code online for learning, but I do not expect that I'll get back to it very soon. 
+
+(I gave up on value averaging in favor of dollar-cost-averaging when I had a son - I can automate the later, but not the former.)
+
+
 Value Averaging Tracker & Helper
 ================================
 
